@@ -13,7 +13,7 @@ app.use(express.json());
 function checksExistsUserAccount(request, response, next) {
   // Complete aqui
 }
-
+  
 app.post('/users', (request, response) => {
   // Complete aqui
 });
