@@ -73,12 +73,17 @@ app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
   return response.json(editTask)
 });
 
-// app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
-//   // Complete aqui
-// });
+app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
 
-// app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
-//   // Complete aqui
-// });
+  const editTaskState = {
+    done: true
+  }
+
+  return response.json(editTaskState)
+});
+
+app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
+  
+});
 
 module.exports = app;
