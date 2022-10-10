@@ -1,4 +1,10 @@
 # ToDo - NodeJS
+- [Introdução](#introdução)
+- [Desenvolvimento](#processo-de-desenvolvimento)
+- [Debugging](#debugging)
+- [Conclusão](#conclusão)
+
+# Introdução
 Projeto para por em prática os fundamentos do Node e protocolos HTTP, a premissa é de um uma lista de tarefas em que cada tarefa seja associada a um usuário. O código inicial recebido foi este a seguir, onde as rotas necessárias já estão descritas, sendo necessário criar as rotinas do sistema e fazer com que corresponda aos requisitos necessários para passar nos testes.
 ```jsx
 const express = require('express');
@@ -43,6 +49,10 @@ app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
 
 module.exports = app;
 ```
+[Voltar ao index](#todo---nodejs)
+
+# Processo de desenvolvimento
+Quais foram as minhas tomadas de descisão durante o desenvolvimento do projeto.
 
 ## checksExistsUserAccount( )
 *Função middleware que estará fazendo a validação de usuário pelo username, impedindo assim fazer requisições para contas de usuários que não existem.*
@@ -86,5 +96,44 @@ Rota responsável por alterar o valor de cada task para true ou false, o process
 - Passando apenas um objeto com o valor do campo que será alterado.
 
 ## app.DELETE(’\todos\id:’)
+- Recebendo o request do usuário e tentei acessar os valores do campo de todo.
 
--
+[Voltar ao index](#todo---nodejs)
+
+# Debugging
+A partir do ponto em que eu não estava conseguindo fazer o get nem o delete no meu projeto, passei a investigar os motivos disso, após dois dias procurando soluções resolvi buscar um direcionamento na resolução do projeto, lá aprendi a investigar a partir dos testes e entender o que estava errado, resolvi então listar aqui para pontuar onde estavam as falhas antes de simplesmente ir corrigindo sem fixar os motivos dos erros antes.
+
+## middleware checkUserExists( )
+**Aqui não existiu a necessidade de nenhuma correção**
+
+## app.POST(users)
+- Método some(  ) ao invés do find(  ), sendo que ambos os métodos não retornam o mesmo tipo de resposta - NO MEU CÓDIGO LOCAL ESSE TRECHO JÁ HAVIA SIDO ALTERADO.
+- No meu caso estou fazendo o push(  ) direto pelo objeto, enquanto no código oficial está sendo passada uma constante com os valores dos objetos. Não creio que isso faça grande diferença - AO TESTAR O CÓDIGO, PROVOU SIM A NECESSIDADE.
+- Faltou indicar o return antes do response, e ainda estou retornando os dados de json( ) entre “{ }”, em algum momento o sistema me retornou um erro semelhante, mas até então eu não havia identificado
+- Outro detalhe diferente foi que poderia ter feito o retorni implicito no método find
+
+## app.GET(todos)
+**Aqui não existiu a necessidade de nenhuma correção**
+*Visto que, apesar dessa rota não estar funcionando na versão original do meu projeto, a syntax estava correta, o erro causado era justamente no uso de métodos e declarações erradas em outras rotas.*
+
+## app.POST(todos)
+- Novamente um erro de processos, eu estava fazendo a requisição de usuário no método GET mas não no POST, inclusive por esse motivo fiz apenas a apresentação das tasks e nenhum push( ) para dentro do array - NO MEU CÓDIGO LOCAL ESSE TRECHO JÁ HAVIA SIDO ALTERADO
+- Esse erro demonstra mais uma vez que na rota GET eu não estava errado, porém não seria possível atualizar - muito menos acessar - o array com as tarefas, visto que estavam sendo criadas mas em nenhum momento inseridas.
+- Visto que no meu código local eu já havia arrumado o primeiro erro, mas estava retornando a variável errada pelo response
+
+## app.PUT(todos:id)
+- Outro caso de divergência de processos, porém o processo em si não estava errado, apenas diferente. Eu passei um objeto com as informações assim como nas rotas anteriores, no código oficial isso não acontece, mas é apenas por questão de escolha.
+- Entretanto eu acabei não fazendo a validação da tarefa, já que ainda não estava retornando nenhuma eu acabei passando batido por esse processo, mas ele deveria dar erro pelo motivo de que as tarefas estavam sendo criadas mas não registradas.
+
+## app.PATCH(todos)
+- O mesmo que a rota PUT, novamente escolhi um processo diferente criando um novo objeto e também não fiz a validação especifica já que estava me baseando nas respostas no insomnia
+- Durante o debug houve dois problemas tanto no PUT como o PATCH das tarefas, a rotina era concluída mas um erro nos testes permanecia pois o processo encerrava com o objeto editado, mais um outro objeto vazio. Tentei alterar o método para tentar evitar isso, mas não se provou eficiente. Foi feita apenas uma atribuição dos campos requisitados a variáveis com os valores de body.
+
+## app.DELETE(todos\id)
+- Nessa rota era preciso passar em dois testes, a minha validação passou em todos os testes. Mas a forma em que foi aplicada não foi possível definir a remoção da task.
+- Para a resolução foi necessário o uso de dois métodos, o que não foi compatível com a minha validação.
+
+[Voltar ao index](#todo---nodejs)
+
+# Conclusão
+A finalização deste projeto deixou uma sensação mista, eu que iniciei muito bem e consegui obter respostas positivas através do Insomnia durante a maior parte do desenvolvimento, mas no final só estava passando em 1 teste foi meio frustrante. No final das contas eu deveria ter dado uma atenção aos testes enquanto criava as rotas e não ter deixado para o final. Apesar disso eu tive um bom primeiro contato com testes JEST, ainda fica a sensação de que meu desempenho poderia ter sido melhor, mas agora o importante é levar o aprendizado.
